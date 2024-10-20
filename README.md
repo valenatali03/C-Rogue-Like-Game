@@ -21,11 +21,11 @@ Este proyecto es un programa en C que utiliza la biblioteca PDCurses para crear 
    pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-pdcurses
    
 ## Compilación
-Compila con el siguiente comando:
+1. Compila con el siguiente comando:
    ```bash
    gcc -o main main.c -I/mingw64/include/pdcurses -L/mingw64/lib -lpdcurses
 
-y ejecuta con:
+2. Ejecuta con:
    ```bash
    ./main
 
