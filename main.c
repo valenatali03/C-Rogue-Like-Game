@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <curses.h>
+#include <ctype.h>
 
 typedef struct Player
 {
@@ -13,20 +14,22 @@ typedef struct Player
 int screenSetUp();
 int mapSetUp();
 Player * playerSetUp();
+int handleInput(int input, Player * player);
+int playerMove(int y, int x, Player * player);
 
 int main () {
-  Player * user;
+  Player * player;
   int ch;
 
   screenSetUp();
 
   mapSetUp();
 
-  user = playerSetUp();
+  player = playerSetUp();
 
-  while (ch = getch() != 'q')
+  while ((ch = tolower(getch())) != 'q')
   {
-    
+    handleInput(ch, player);
   }
   
 
@@ -42,7 +45,7 @@ int screenSetUp() {
   noecho();
   refresh();
 
-  return 0;
+  return 1;
 }
 
 int mapSetUp() {
@@ -67,7 +70,7 @@ int mapSetUp() {
   mvprintw(14, 40, "|.........|");
   mvprintw(15, 40, "-----------");
 
-  return 0;
+  return 1;
 }
 
 Player * playerSetUp() {
@@ -82,4 +85,42 @@ Player * playerSetUp() {
   move(newPlayer->yPosition, newPlayer->xPosition);
 
   return newPlayer;
+}
+
+int handleInput(int input, Player * player) {
+  switch (input)
+  {
+  case 'w':
+    playerMove(player->yPosition - 1, player->xPosition, player);
+    break;
+  
+  case 's':
+    playerMove(player->yPosition + 1, player->xPosition, player);
+    break;
+
+  case 'a':
+    playerMove(player->yPosition, player->xPosition - 1, player);
+    break;
+
+  case 'd':
+    playerMove(player->yPosition, player->xPosition + 1, player);
+    break;
+
+  default:
+    break;
+  }
+
+  return 1;
+}
+
+int playerMove(int y, int x, Player * player) {
+  mvprintw(player->yPosition, player->xPosition, ".");
+  
+  player->yPosition = y;
+  player->xPosition = x;
+
+  mvprintw(player->yPosition, player->xPosition, "@");
+  move(player->yPosition, player->xPosition);
+
+  return 1;
 }
