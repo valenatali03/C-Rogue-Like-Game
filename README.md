@@ -1,6 +1,6 @@
 # Proyecto en C con PDCurses
 
-Este proyecto es un programa en C que utiliza la biblioteca PDCurses para crear interfaces de texto en modo consola. El entorno de desarrollo utilizado es Windows con MSYS2 y el compilador MinGW64.
+Este proyecto es un programa en C que utiliza la biblioteca PDCurses para crear un videojuego como rogue/nethack. El entorno de desarrollo utilizado es Windows con MSYS2 y el compilador MinGW64.
 
 ## Requisitos
 
