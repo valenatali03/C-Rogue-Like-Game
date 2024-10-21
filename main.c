@@ -16,6 +16,7 @@ int mapSetUp();
 Player * playerSetUp();
 int handleInput(int input, Player * player);
 int playerMove(int y, int x, Player * player);
+int checkPosition(int y, int x, Player * entity);
 
 int main () {
   Player * player;
@@ -88,29 +89,52 @@ Player * playerSetUp() {
 }
 
 int handleInput(int input, Player * player) {
+  int newY;
+  int newX;
+
   switch (input)
   {
   case 'w':
-    playerMove(player->yPosition - 1, player->xPosition, player);
+    newY = player->yPosition - 1;
+    newX = player->xPosition;
     break;
   
   case 's':
-    playerMove(player->yPosition + 1, player->xPosition, player);
+    newY = player->yPosition + 1;
+    newX = player->xPosition;
     break;
 
   case 'a':
-    playerMove(player->yPosition, player->xPosition - 1, player);
+    newY = player->yPosition;
+    newX = player->xPosition - 1;
     break;
 
   case 'd':
-    playerMove(player->yPosition, player->xPosition + 1, player);
+    newY = player->yPosition;
+    newX = player->xPosition + 1;
     break;
 
   default:
     break;
   }
+  
+  checkPosition(newY, newX, player);
 
   return 1;
+}
+
+int checkPosition(int y, int x, Player * entity) {
+  int space;
+  switch (mvinch(y,x))
+  {
+  case '.':
+    playerMove(y, x, entity);
+    break;
+  
+  default:
+    move(entity->yPosition, entity->xPosition);
+    break;
+  }
 }
 
 int playerMove(int y, int x, Player * player) {
