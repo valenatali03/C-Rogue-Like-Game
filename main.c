@@ -3,6 +3,7 @@
 #include <curses.h>
 #include <ctype.h>
 #include <time.h>
+#include <stdbool.h>
 
 typedef struct Position
 {
@@ -34,6 +35,11 @@ Player *playerSetUp();
 int handleInput(int input, Player *player);
 int playerMove(int y, int x, Player *player);
 int checkPosition(int y, int x, Player *entity);
+int connectDoors(Position *doorOne, Position *doorTwo);
+
+/*Aux*/
+bool is_closer(int current, int target, int new_position);
+bool is_empty_space(int y, int x);
 
 /*room functions*/
 Room *createRoom(int x, int y, int height, int width);
@@ -109,6 +115,10 @@ Room **mapSetUp()
   rooms[2] = createRoom(40, 10, 6, 11);
   drawRoom(rooms[2]);
 
+  connectDoors(rooms[0]->doors[3], rooms[2]->doors[1]);
+
+  connectDoors(rooms[1]->doors[2], rooms[0]->doors[0]);
+
   return rooms;
 }
 
@@ -129,15 +139,15 @@ Room *createRoom(int x, int y, int height, int width)
   newRoom->doors[0]->x = rand() % (width - 2) + newRoom->position.x + 1;
   newRoom->doors[0]->y = newRoom->position.y;
 
-  /*bottom door*/
-  newRoom->doors[1] = malloc(sizeof(Position));
-  newRoom->doors[1]->x = rand() % (width - 2) + newRoom->position.x + 1;
-  newRoom->doors[1]->y = newRoom->position.y + height - 1;
-
   /*left door*/
+  newRoom->doors[1] = malloc(sizeof(Position));
+  newRoom->doors[1]->y = rand() % (height - 2) + newRoom->position.y + 1;
+  newRoom->doors[1]->x = newRoom->position.x;
+
+  /*bottom door*/
   newRoom->doors[2] = malloc(sizeof(Position));
-  newRoom->doors[2]->y = rand() % (height - 2) + newRoom->position.y + 1;
-  newRoom->doors[2]->x = newRoom->position.x;
+  newRoom->doors[2]->x = rand() % (width - 2) + newRoom->position.x + 1;
+  newRoom->doors[2]->y = newRoom->position.y + height - 1;
 
   /*right door*/
   newRoom->doors[3] = malloc(sizeof(Position));
@@ -183,6 +193,73 @@ int drawRoom(Room *room)
   mvprintw(room->doors[3]->y, room->doors[3]->x, "+");
 
   return 1;
+}
+
+int connectDoors(Position *doorOne, Position *doorTwo)
+{
+  Position temp;
+  Position previous;
+
+  int count = 0;
+
+  temp.x = doorOne->x;
+  temp.y = doorOne->y;
+
+  previous = temp;
+
+  while (true)
+  {
+    // Step left
+    if (is_closer(temp.x, doorTwo->x, temp.x - 1) && is_empty_space(temp.y, temp.x - 1))
+    {
+      previous.x = temp.x;
+      temp.x = temp.x - 1;
+    }
+    // Step right
+    else if (is_closer(temp.x, doorTwo->x, temp.x + 1) && is_empty_space(temp.y, temp.x + 1))
+    {
+      previous.x = temp.x;
+      temp.x = temp.x + 1;
+    }
+    // Step down
+    else if (is_closer(temp.y, doorTwo->y, temp.y + 1) && is_empty_space(temp.y + 1, temp.x))
+    {
+      previous.y = temp.y;
+      temp.y = temp.y + 1;
+    }
+    // Step up
+    else if (is_closer(temp.y, doorTwo->y, temp.y - 1) && is_empty_space(temp.y - 1, temp.x))
+    {
+      previous.y = temp.y;
+      temp.y = temp.y - 1;
+    }
+    else
+    {
+      if (count == 0 && abs(temp.x - doorTwo->x) == 0)
+      {
+        temp = previous;
+        count++;
+        continue;
+      }
+      else
+      {
+        return 0;
+      }
+    }
+    mvprintw(temp.y, temp.x, "#");
+  }
+
+  return 1;
+}
+
+bool is_closer(int current, int target, int new_position)
+{
+  return abs(new_position - target) < abs(current - target);
+}
+
+bool is_empty_space(int y, int x)
+{
+  return mvinch(y, x) == ' ';
 }
 
 Player *playerSetUp()
@@ -241,6 +318,8 @@ int checkPosition(int y, int x, Player *entity)
   int space;
   switch (mvinch(y, x))
   {
+  case '+':
+  case '#':
   case '.':
     playerMove(y, x, entity);
     break;
