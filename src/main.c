@@ -18,7 +18,8 @@ int main()
 
   while ((ch = tolower(getch())) != 'q')
   {
-    handleInput(ch, player);
+    newPosition = handleInput(ch, player);
+    checkPosition(newPosition, player, level);
   }
 
   return 0;

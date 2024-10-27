@@ -15,9 +15,9 @@ Player *playerSetUp()
     return newPlayer;
 }
 
-Position * handleInput(int input, Player *player)
+Position *handleInput(int input, Player *player)
 {
-    Position * newPosition;
+    Position *newPosition;
     newPosition = malloc(sizeof(Position));
 
     switch (input)
@@ -49,15 +49,15 @@ Position * handleInput(int input, Player *player)
     return newPosition;
 }
 
-int checkPosition(Position *newPosition, Player *entity)
+int checkPosition(Position *newPosition, Player *entity, char **level)
 {
     int space;
-    switch (mvinch(y, x))
+    switch (mvinch(newPosition->y, newPosition->x))
     {
     case '+':
     case '#':
     case '.':
-        playerMove(y, x, entity);
+        playerMove(newPosition, entity, level);
         break;
 
     default:
@@ -66,12 +66,18 @@ int checkPosition(Position *newPosition, Player *entity)
     }
 }
 
-int playerMove(Position *newPosition, Player *player)
+int playerMove(Position *newPosition, Player *player, char **level)
 {
-    mvprintw(player->position.y, player->position.x, ".");
+    char buffer[8];
 
-    player->position.y = y;
-    player->position.x = x;
+    char aux = level[player->position.y][player->position.x];
+
+    sprintf(buffer, "%c", aux);
+
+    mvprintw(player->position.y, player->position.x, buffer);
+
+    player->position.y = newPosition->y;
+    player->position.x = newPosition->x;
 
     mvprintw(player->position.y, player->position.x, "@");
     move(player->position.y, player->position.x);
