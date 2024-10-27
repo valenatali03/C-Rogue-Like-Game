@@ -15,51 +15,49 @@ Player *playerSetUp()
     return newPlayer;
 }
 
-int handleInput(int input, Player *player)
+Position *handleInput(int input, Player *player)
 {
-    int newY;
-    int newX;
+    Position *newPosition;
+    newPosition = malloc(sizeof(Position));
 
     switch (input)
     {
     case 'w':
-        newY = player->position.y - 1;
-        newX = player->position.x;
+        newPosition->y = player->position.y - 1;
+        newPosition->x = player->position.x;
         break;
 
     case 's':
-        newY = player->position.y + 1;
-        newX = player->position.x;
+        newPosition->y = player->position.y + 1;
+        newPosition->x = player->position.x;
         break;
 
     case 'a':
-        newY = player->position.y;
-        newX = player->position.x - 1;
+        newPosition->y = player->position.y;
+        newPosition->x = player->position.x - 1;
         break;
 
     case 'd':
-        newY = player->position.y;
-        newX = player->position.x + 1;
+        newPosition->y = player->position.y;
+        newPosition->x = player->position.x + 1;
         break;
 
     default:
         break;
     }
 
-    checkPosition(newY, newX, player);
-
-    return 1;
+    return newPosition;
 }
 
-int checkPosition(int y, int x, Player *entity)
+int checkPosition(Position *newPosition, Player *entity, char **level)
 {
     int space;
-    switch (mvinch(y, x))
+    switch (mvinch(newPosition->y, newPosition->x))
     {
     case '+':
     case '#':
     case '.':
-        playerMove(y, x, entity);
+        playerMove(newPosition, entity, level);
         break;
 
     default:
@@ -68,12 +66,18 @@ int checkPosition(int y, int x, Player *entity)
     }
 }
 
-int playerMove(int y, int x, Player *player)
+int playerMove(Position *newPosition, Player *player, char **level)
 {
-    mvprintw(player->position.y, player->position.x, ".");
+    char buffer[8];
 
-    player->position.y = y;
-    player->position.x = x;
+    char aux = level[player->position.y][player->position.x];
+
+    sprintf(buffer, "%c", aux);
+
+    mvprintw(player->position.y, player->position.x, buffer);
+
+    player->position.y = newPosition->y;
+    player->position.x = newPosition->x;
 
     mvprintw(player->position.y, player->position.x, "@");
     move(player->position.y, player->position.x);

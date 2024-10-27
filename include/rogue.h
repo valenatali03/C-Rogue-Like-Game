@@ -33,19 +33,24 @@ typedef struct Player
 } Player;
 
 int screenSetUp();
-Room **mapSetUp();
-Player *playerSetUp();
-int handleInput(int input, Player *player);
-int playerMove(int y, int x, Player *player);
-int checkPosition(int y, int x, Player *entity);
-int connectDoors(Position *doorOne, Position *doorTwo);
 
-/*Aux*/
-bool is_closer(int current, int target, int new_position);
-bool is_empty_space(int y, int x);
+/*level/Map functions*/
+Room **mapSetUp();
+
+/*Players functions*/
+Player *playerSetUp();
+Position *handleInput(int input, Player *player);
+int playerMove(Position *newPosition, Player *player, char **level);
+int checkPosition(Position *newPosition, Player *entity, char **level);
 
 /*room functions*/
 Room *createRoom(int x, int y, int height, int width);
 int drawRoom(Room *room);
+int connectDoors(Position *doorOne, Position *doorTwo);
+char **saveLevelPositions();
+
+/*Aux*/
+bool is_closer(int current, int target, int new_position);
+bool is_empty_space(int y, int x);
 
 #endif
