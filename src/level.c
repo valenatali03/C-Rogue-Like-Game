@@ -1,6 +1,19 @@
 #include "rogue.h"
 
-Room **mapSetUp()
+Level *createLevel(int level)
+{
+  Level *newLevel;
+  newLevel = malloc(sizeof(Level));
+
+  newLevel->level = level;
+  newLevel->sizeRooms = 3;
+  newLevel->rooms = roomSetUp();
+  newLevel->tiles = saveLevelPositions();
+
+  return newLevel;
+}
+
+Room **roomSetUp()
 {
   Room **rooms;
   rooms = malloc(sizeof(Room) * 6);
@@ -21,9 +34,10 @@ Room **mapSetUp()
   return rooms;
 }
 
-char ** saveLevelPositions() {
-  int x,y;
-  char ** positions;
+char **saveLevelPositions()
+{
+  int x, y;
+  char **positions;
   positions = malloc(sizeof(char *) * 25);
 
   for (y = 0; y < 25; y++)

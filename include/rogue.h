@@ -8,6 +8,16 @@
 #include <time.h>
 #include <stdbool.h>
 
+typedef struct Level
+{
+    char **tiles;
+    int level;
+    int sizeRooms;
+    struct Room **rooms;
+    struct Monset **monsters;
+    int sizeMonsters;
+} Level;
+
 typedef struct Position
 {
     int x;
@@ -35,7 +45,8 @@ typedef struct Player
 int screenSetUp();
 
 /*level/Map functions*/
-Room **mapSetUp();
+Level *createLevel(int level);
+Room **roomSetUp();
 
 /*Players functions*/
 Player *playerSetUp();

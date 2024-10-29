@@ -6,20 +6,18 @@ int main()
   int ch;
   Position *newPosition;
 
-  char **level;
+  Level *level;
 
   screenSetUp();
 
-  mapSetUp();
-
-  level = saveLevelPositions();
+  level = createLevel(1);
 
   player = playerSetUp();
 
   while ((ch = tolower(getch())) != 'q')
   {
     newPosition = handleInput(ch, player);
-    checkPosition(newPosition, player, level);
+    checkPosition(newPosition, player, level->tiles);
   }
 
   return 0;
@@ -32,7 +30,6 @@ int screenSetUp()
     fprintf(stderr, "Error inicializando la pantalla\n");
     exit(1);
   }
-  printw("Hello world!");
   noecho();
   refresh();
 
